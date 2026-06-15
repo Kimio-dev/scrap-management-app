@@ -1,0 +1,17 @@
+# Keep environment variables out of version control
+# 🌟 1. 環境変数ファイル（最も重要！絶対に公開NG）
+.env
+.env.local
+.env.*.local
+
+# 📦 2. 外部ライブラリ（容量が大きく、クラウド側で自動生成するもの）
+node_modules
+node_modules/
+/dist
+/build
+
+/generated/prisma
+
+# 🛠️ 3. OSやエディタのキャッシュ（開発に不要なノイズ）
+.DS_Store
+.vscode/

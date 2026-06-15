@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model monthly_closing_logs {
+  id          Int      @id @default(autoincrement())
+  year_month  String
+  action_type String
+  operated_at DateTime @default(now()) @db.Timestamp(6)
+  operated_by String
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model monthly_closings {
+  id         Int      @id @default(autoincrement())
+  year_month String   @unique @db.Char(7)
+  closed_at  DateTime @default(now()) @db.Timestamp(6)
+  closed_by  Int
+  users      users    @relation(fields: [closed_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monthly_closed_by")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model scrap_audit_logs {
+  id                  Int      @id @default(autoincrement())
+  scrap_collection_id Int
+  operation_type      String   @db.VarChar(10)
+  before_value        Json?
+  after_value         Json?
+  operated_by         Int
+  operated_at         DateTime @default(now()) @db.Timestamp(6)
+  users               users    @relation(fields: [operated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_audit_operated_by")
+
+  @@index([operated_at], map: "idx_audit_operated_at")
+  @@index([scrap_collection_id], map: "idx_audit_scrap_collection_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model scrap_collections {
+  id                                        Int       @id @default(autoincrement())
+  collection_date                           DateTime  @db.Date
+  amount                                    Decimal   @db.Decimal(10, 2)
+  created_by                                Int
+  created_at                                DateTime  @default(now()) @db.Timestamp(6)
+  updated_by                                Int?
+  updated_at                                DateTime? @db.Timestamp(6)
+  users_scrap_collections_created_byTousers users     @relation("scrap_collections_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_scrap_created_by")
+  users_scrap_collections_updated_byTousers users?    @relation("scrap_collections_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_scrap_updated_by")
+
+  @@index([collection_date], map: "idx_scrap_collection_date")
+}
+
+model users {
+  id                                                    Int                 @id @default(autoincrement())
+  name                                                  String              @db.VarChar(100)
+  email                                                 String              @unique @db.VarChar(255)
+  created_at                                            DateTime            @default(now()) @db.Timestamp(6)
+  monthly_closings                                      monthly_closings[]
+  scrap_audit_logs                                      scrap_audit_logs[]
+  scrap_collections_scrap_collections_created_byTousers scrap_collections[] @relation("scrap_collections_created_byTousers")
+  scrap_collections_scrap_collections_updated_byTousers scrap_collections[] @relation("scrap_collections_updated_byTousers")
+}
