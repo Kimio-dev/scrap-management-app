@@ -28,8 +28,8 @@ export default function Analytics() {
     setLoading(true);
     try {
       const [currentYearRes, nextYearRes] = await Promise.all([
-        fetch(`http://localhost:3001/api/scraps/analytics/${year}`),
-        fetch(`http://localhost:3001/api/scraps/analytics/${year + 1}`)
+        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/scraps/analytics/${year}`),
+        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/scraps/analytics/${year + 1}`)
       ]);
 
       if (!currentYearRes.ok || !nextYearRes.ok) {

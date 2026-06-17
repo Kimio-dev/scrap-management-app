@@ -43,7 +43,7 @@ export default function ScrapEditModal({ isOpen, onClose, onSuccess, scrapData }
 
     setIsSubmitting(true);
     try {
-      const response = await fetch(`http://localhost:3001/api/scraps/${scrapData.id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/scraps/${scrapData.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -73,7 +73,7 @@ export default function ScrapEditModal({ isOpen, onClose, onSuccess, scrapData }
 
     setIsSubmitting(true);
     try {
-      const response = await fetch(`http://localhost:3001/api/scraps/${scrapData.id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/scraps/${scrapData.id}`, {
         method: 'DELETE',
       });
 

@@ -44,7 +44,7 @@ export default function List() {
 
   // データの再取得
   const fetchAllData = () => {
-    fetch('http://localhost:3001/api/scraps')
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/scraps`)
       .then((res) => {
         if (!res.ok) throw new Error('データの取得に失敗しました');
         return res.json();
@@ -94,7 +94,7 @@ export default function List() {
   };
 
   const handleToggleClosing = async () => {
-  const url = `http://localhost:3001/api/scraps/closings${isClosed ? `/${currentYearMonthStr}` : ''}`;
+  const url = `${import.meta.env.VITE_API_BASE_URL}/api/scraps/closings${isClosed ? `/${currentYearMonthStr}` : ''}`;
   const method = isClosed ? 'DELETE' : 'POST';
   
   if (!window.confirm(`この月の締め処理を${isClosed ? '解除' : '実行'}しますか？`)) return;
